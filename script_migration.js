@@ -154,21 +154,24 @@ Object.prototype.prop_access = function(path) {
 String.prototype.interpolate = function(animal) {
   let maChaine = this;
   let result = null;
-  let fullResult = "";
+
+  /*
+  * Je check si un input a du texte avec {{}}
+  * Si oui je recupere son contenu et fait appelle a prop_access
+  */
   if(this.includes("{") || this.includes("{ ")){
     let objectSplited = maChaine.split("{");
-    console.log(objectSplited)
+
     let myObject = objectSplited[2];
     let temp = myObject.split("}}")
-    console.log("temp: " + temp[0]);
+
     let tempSplit = temp[0].split("}}");
     maChaine = tempSplit[0];
-    console.log("machaine : " +maChaine);
-    console.log("animal : " +animal);
     result = animal.prop_access(maChaine);
   }
   return this.replace("{{"+maChaine+"}}", result);
 }
+
 
 const generateStructure = (structure) => {
   const node = document.createElement(structure.type);
