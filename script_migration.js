@@ -159,24 +159,15 @@ String.prototype.interpolate = function(animal) {
     let objectSplited = maChaine.split("{");
     console.log(objectSplited)
     let myObject = objectSplited[2];
-    let tempSplit = myObject.split("}}");
+    let temp = myObject.split("}}")
+    console.log("temp: " + temp[0]);
+    let tempSplit = temp[0].split("}}");
     maChaine = tempSplit[0];
     console.log("machaine : " +maChaine);
     console.log("animal : " +animal);
-    console.log("objectSplited; " + objectSplited)
     result = animal.prop_access(maChaine);
-    
-    for(let i = 0; i< objectSplited.length; i++){
-      if(objectSplited[i] != maChaine){
-        fullResult += objectSplited[i];
-      }else{
-        fullResult += result
-      }
-    }
-    console.log("fullResult : " + fullResult);
   }
-
-  return result;
+  return this.replace("{{"+maChaine+"}}", result);
 }
 
 const generateStructure = (structure) => {
@@ -200,10 +191,8 @@ const generateStructure = (structure) => {
     for (let child of structure.children) {
       if (child === undefined) continue;
       if (typeof child === "string") {
-        machaine = "{{ type.name }} Type d'animal: ";
-        animal = {type: {name: "chien"}};
         node.appendChild(
-          document.createTextNode(child.interpolate(animal))
+          document.createTextNode(child.interpolate(structure.attributes))
         );
       } else {
         node.appendChild(generateStructure(child));
@@ -214,7 +203,7 @@ const generateStructure = (structure) => {
   return node;
 };
 root.dispatchEvent(new Event("rerender"));
-//root.appendChild(generateStructure(struct));
+root.appendChild(generateStructure(struct));
 
 const MiniReact = {
   Component: class Component {},
