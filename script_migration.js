@@ -1,5 +1,4 @@
 const root = document.querySelector("#root");
-history.pushState({ title: "Page1" }, "Page 1", "/page1");
 
 function link(label, path) {
   return {
