@@ -80,7 +80,7 @@ function Page2() {
 }
 
 function generatePage() {
-  document.title = "Page";
+  document.title = history.state.title;
   const currentPath = window.location.pathname;
   let elem;
   switch (currentPath) {
