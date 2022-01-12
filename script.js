@@ -94,4 +94,4 @@ root.addEventListener("rerender", generatePage);
 window.onpopstate = () => root.dispatchEvent(new Event("rerender"));
 
 root.dispatchEvent(new Event("rerender"));
-//root.appendChild(Page2());
+root.appendChild(Page2());
