@@ -80,7 +80,7 @@ function Page2() {
 }
 
 function generatePage() {
-  document.title = history.state.title;
+  document.title = "Page";
   const currentPath = window.location.pathname;
   let elem;
   switch (currentPath) {
@@ -140,6 +140,45 @@ const struct = {
   ],
 };
 
+Object.prototype.prop_access = function(path) {
+  let obj = this;
+    if (path === null || path === '') return obj;
+    let chemin = path.split('.')
+    for (let i = 0; i < chemin.length; ++i) {
+      if (obj === null || obj[chemin[i]] === undefined) return console.log(path + ' not exist.');
+      else obj = obj[chemin[i]];
+    }
+    return obj;
+}
+
+String.prototype.interpolate = function(animal) {
+  let maChaine = this;
+  let result = null;
+  let fullResult = "";
+  if(this.includes("{") || this.includes("{ ")){
+    let objectSplited = maChaine.split("{");
+    console.log(objectSplited)
+    let myObject = objectSplited[2];
+    let tempSplit = myObject.split("}}");
+    maChaine = tempSplit[0];
+    console.log("machaine : " +maChaine);
+    console.log("animal : " +animal);
+    console.log("objectSplited; " + objectSplited)
+    result = animal.prop_access(maChaine);
+    
+    for(let i = 0; i< objectSplited.length; i++){
+      if(objectSplited[i] != maChaine){
+        fullResult += objectSplited[i];
+      }else{
+        fullResult += result
+      }
+    }
+    console.log("fullResult : " + fullResult);
+  }
+
+  return result;
+}
+
 const generateStructure = (structure) => {
   const node = document.createElement(structure.type);
   if (structure.attributes) {
@@ -161,8 +200,10 @@ const generateStructure = (structure) => {
     for (let child of structure.children) {
       if (child === undefined) continue;
       if (typeof child === "string") {
+        machaine = "{{ type.name }} Type d'animal: ";
+        animal = {type: {name: "chien"}};
         node.appendChild(
-          document.createTextNode(child.interpolate(structure.attributes))
+          document.createTextNode(child.interpolate(animal))
         );
       } else {
         node.appendChild(generateStructure(child));
