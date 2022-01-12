@@ -81,7 +81,7 @@ function Page2() {
 }
 
 function generatePage() {
-  document.title = history.state.title;
+  document.title = history?.state?.title;
   const currentPath = window.location.pathname;
   let elem;
   switch (currentPath) {
@@ -90,6 +90,9 @@ function generatePage() {
       break;
     case "/page2":
       elem = Page2();
+      break;
+    default:
+      elem = Page1();
       break;
   }
   if (root.firstChild) {
@@ -210,7 +213,17 @@ root.dispatchEvent(new Event("rerender"));
 root.appendChild(generateStructure(struct));
 
 const MiniReact = {
-  Component: class Component {},
+  Component: class Component {
+
+    display(newProps){
+      //Je call shouldUpdate()
+      shouldUpade()
+    }
+
+    shoulUpdate(){
+
+    }
+  },
 };
 
 class Hello extends MiniReact.Component {
@@ -224,7 +237,7 @@ class Hello extends MiniReact.Component {
   render() {
     return MiniReact.createElement("div", null, [
       `Hello ${this.props.toWhat}`,
-      React.createElement(UserList, { currentUser: this.props.toWhat }),
+      MiniReact.createElement(UserList, { currentUser: this.props.toWhat }),
     ]);
     return {
       type: "div",
@@ -257,21 +270,6 @@ class UserList extends MiniReact.Component {
             )
       )
     );
-    return {
-      type: "ul",
-      attributes: null,
-      children: [
-        {
-          type: "li",
-          children: [1],
-        },
-        undefined,
-        {
-          type: "li",
-          children: [3],
-        },
-      ],
-    };
   }
 }
 
@@ -284,12 +282,5 @@ class App extends MiniReact.Component {
       MiniReact.createElement(Hello, { toWhat: user })
     );
     // A faire lors de la génération type_check(props, Hello.propTypes)
-    return {
-      type: Hello,
-      props: {
-        toWhat: "test",
-      },
-      children: [],
-    };
   }
 }
