@@ -1,6 +1,28 @@
 const root = document.querySelector("#root");
 
 
+String.prototype.interpolate = function(animal) {
+  let maChaine = this;
+  let result = null;
+
+  /*
+  * Je check si un input a du texte avec {{}}
+  * Si oui je recupere son contenu et fait appelle a prop_access
+  */
+  if(this.includes("{") || this.includes("{ ")){
+    let objectSplited = maChaine.split("{");
+
+    let myObject = objectSplited[2];
+    let temp = myObject.split("}}")
+
+    let tempSplit = temp[0].split("}}");
+    maChaine = tempSplit[0];
+    result = animal.prop_access(maChaine);
+  }
+  return this.replace("{{"+maChaine+"}}", result);
+}
+
+
 const MiniReact = {
   Component: class Component {
 
@@ -14,19 +36,51 @@ const MiniReact = {
     }
   },
 
-  createElement(type, attributes, props, child) {
-    return {
-      type,
-      attributes,
-      props: {
-        props,
-        children: child
+  createElement(type, props, attributes, children) {
+    const node = document.createElement(type);
+    if (attributes) {
+      for (let attName in attributes) {
+        if (/on([A-Z].*)/.test(attName)) {
+          const eventName = attName.match(/on([A-Z].*)/)[1].toLowerCase();
+          node.addEventListener(eventName, attributes[attName]);
+        } else {
+          node.setAttribute(attName, attributes[attName]);
+        }
       }
     }
-  }
+    /*if (dataset) {
+      for (let attName in dataset) {
+        node.dataset[attName] = dataset[attName];
+      }
+    }*/
+    if (children)
+      for (let child of children) {
+        if (child === undefined) continue;
+        if (typeof child === "string") {
+          node.appendChild(
+            document.createTextNode(child.interpolate(attributes))
+          );
+        } else {
+          node.appendChild(generateStructure(child));
+        }
+      }
+
+    return node;
+  },
 };
 
-console.log(MiniReact.createElement('p', null, 'i'));
+/*console.log(MiniReact.createElement("table", null, null, [
+    MiniReact.createElement("tbody", null, null, new Array(5).fill().map((_, indexRow) => (
+      MiniReact.createElement("tr", null, null, new Array(5).fill().map((_, indexCol) => (
+        MiniReact.createElement("td", `${indexRow}-${indexCol}`, tdClickHandler, data[`${indexRow}-${indexCol}`] ??
+            `Cell ${indexRow}-${indexCol}`)
+      )),
+    )),
+  )),
+],));*/
+
+
+console.log(MiniReact.createElement('p', null, null, 'test'));
 
 function link(label, path) {
   return {
@@ -67,14 +121,6 @@ function Page1() {
     td.replaceChild(text, input);
     td.addEventListener("click", tdClickHandler);
   };
-
-  /*const element = MiniReact.createElement(
-   
-    MiniReact.createElement("p", null, "i"),
-    MiniReact.createElement("b")
-  );
-
-  console.log(element);*/
 
   return {
     type: "div",
@@ -188,27 +234,6 @@ Object.prototype.prop_access = function(path) {
       else obj = obj[chemin[i]];
     }
     return obj;
-}
-
-String.prototype.interpolate = function(animal) {
-  let maChaine = this;
-  let result = null;
-
-  /*
-  * Je check si un input a du texte avec {{}}
-  * Si oui je recupere son contenu et fait appelle a prop_access
-  */
-  if(this.includes("{") || this.includes("{ ")){
-    let objectSplited = maChaine.split("{");
-
-    let myObject = objectSplited[2];
-    let temp = myObject.split("}}")
-
-    let tempSplit = temp[0].split("}}");
-    maChaine = tempSplit[0];
-    result = animal.prop_access(maChaine);
-  }
-  return this.replace("{{"+maChaine+"}}", result);
 }
 
 
