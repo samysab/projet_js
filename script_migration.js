@@ -1,5 +1,33 @@
 const root = document.querySelector("#root");
 
+
+const MiniReact = {
+  Component: class Component {
+
+    display(newProps){
+      //Je call shouldUpdate()
+      shouldUpade()
+    }
+
+    shoulUpdate(){
+
+    }
+  },
+
+  createElement(type, attributes, props, child) {
+    return {
+      type,
+      attributes,
+      props: {
+        props,
+        children: child
+      }
+    }
+  }
+};
+
+console.log(MiniReact.createElement('p', null, 'i'));
+
 function link(label, path) {
   return {
     type: "a",
@@ -39,6 +67,14 @@ function Page1() {
     td.replaceChild(text, input);
     td.addEventListener("click", tdClickHandler);
   };
+
+  /*const element = MiniReact.createElement(
+   
+    MiniReact.createElement("p", null, "i"),
+    MiniReact.createElement("b")
+  );
+
+  console.log(element);*/
 
   return {
     type: "div",
@@ -211,34 +247,7 @@ const generateStructure = (structure) => {
 root.dispatchEvent(new Event("rerender"));
 root.appendChild(generateStructure(struct));
 
-const MiniReact = {
-  Component: class Component {
 
-    display(newProps){
-      //Je call shouldUpdate()
-      shouldUpade()
-    }
-
-    shoulUpdate(){
-
-    }
-
-    createElement(type, attributes, props, children) {
-      return {
-        type,
-        attributes,
-        props: {
-          props,
-          children: children.map(child =>
-            typeof child === "object"
-            ? child
-            : createTextElement(child)
-          ),
-        }
-      }
-    }
-  },
-};
 
 class Hello extends MiniReact.Component {
   static propTypes = {
@@ -249,6 +258,7 @@ class Hello extends MiniReact.Component {
     },
   };
   render() {
+
     return MiniReact.createElement("div", null, [
       `Hello ${this.props.toWhat}`,
       MiniReact.createElement(UserList, { currentUser: this.props.toWhat }),
@@ -292,6 +302,7 @@ class App extends MiniReact.Component {
     users: [1, 2, 3],
   };
   render() {
+    
     return this.state.users.map((user) =>
       MiniReact.createElement(Hello, { toWhat: user })
     );
