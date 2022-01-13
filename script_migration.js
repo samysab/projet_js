@@ -61,7 +61,7 @@ const MiniReact = {
             document.createTextNode(child.interpolate(attributes))
           );
         } else {
-          node.appendChild(generateStructure(child));
+          node.appendChild(child);
         }
       }
 
@@ -161,7 +161,10 @@ function Page2() {
 }
 
 function Page3() {
-  return MiniReact.createElement('p', null, null, 'test');
+  return MiniReact.createElement('div', null, null, [
+    MiniReact.createElement('p', null, null, 'Salut'),
+    MiniReact.createElement('p', null, null, 'Test')
+  ]);
 }
 
 function generatePage() {
