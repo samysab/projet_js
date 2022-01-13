@@ -163,7 +163,8 @@ function Page2() {
 function Page3() {
   return MiniReact.createElement('div', null, null, [
     MiniReact.createElement('p', null, null, 'Salut'),
-    MiniReact.createElement('p', null, null, 'Test')
+    MiniReact.createElement('p', null, null, 'Test'),
+    MiniReact.createElement('button', null, { onClick: () => console.log('test')}, 'Test')
   ]);
 }
 
