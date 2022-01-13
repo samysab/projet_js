@@ -1,5 +1,4 @@
 const root = document.querySelector("#root");
-history.pushState({ title: "Page1" }, "Page 1", "/page1");
 
 function link(label, path) {
   return {
@@ -139,6 +138,13 @@ const struct = {
           },
           children: ["User2"],
         },
+        {
+          type: "li", //Hello,
+          dataset: {
+            position: 3,
+          },
+          children: ["User3"],
+        },
       ],
     },
   ],
@@ -216,13 +222,24 @@ const MiniReact = {
   Component: class Component {
 
     display(newProps){
-      //Je call shouldUpdate()
-      shouldUpade()
+      if(this.shouldUpade(newProps)){
+        this.render()
+      }
     }
 
     shoulUpdate(){
+        //Je compare oldProps avec newProp
+        if(JSON.stringify(this.props) != JSON.stringify(newProps)){
+          
+          //TODO : si render invoque d'autres composants, le composant courant appelle la fonction display(compProps) des sous-composants
 
+          return true;
+        }else{
+          return false;
+        }
     }
+
+    
   },
 };
 
