@@ -222,6 +222,21 @@ const MiniReact = {
     shoulUpdate(){
 
     }
+
+    createElement(type, attributes, props, children) {
+      return {
+        type,
+        attributes,
+        props: {
+          props,
+          children: children.map(child =>
+            typeof child === "object"
+            ? child
+            : createTextElement(child)
+          ),
+        }
+      }
+    }
   },
 };
 
