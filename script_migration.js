@@ -80,7 +80,6 @@ const MiniReact = {
 ],));*/
 
 
-console.log(MiniReact.createElement('p', null, null, 'test'));
 
 function link(label, path) {
   return {
@@ -157,8 +156,12 @@ function Page1() {
 function Page2() {
   return {
     type: "h1",
-    children: ["Page 2", link("Page 1", "/page1")],
+    children: ["Page 2", link("Page 1", "/page1"), "Page 3", link("Page 3", "/page3")],
   };
+}
+
+function Page3() {
+  return MiniReact.createElement('p', null, null, 'test');
 }
 
 function generatePage() {
@@ -172,14 +175,17 @@ function generatePage() {
     case "/page2":
       elem = Page2();
       break;
+    case "/page3":
+      elem = Page3();
+      break;
     default:
       elem = Page1();
       break;
   }
   if (root.firstChild) {
-    root.replaceChild(generateStructure(elem), root.firstChild);
+    root.replaceChild(elem, root.firstChild);
   } else {
-    root.appendChild(generateStructure(elem));
+    root.appendChild(elem);
   }
 }
 
