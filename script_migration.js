@@ -154,10 +154,15 @@ function Page1() {
 }
 
 function Page2() {
-  return {
-    type: "h1",
-    children: ["Page 2", link("Page 1", "/page1"), "Page 3", link("Page 3", "/page3")],
-  };
+  // return {
+  //   type: "h1",
+  //   children: ["Page 2", link("Page 1", "/page1"), "Page 3", link("Page 3", "/page3")],
+  // };
+  return MiniReact.createElement('h1', null, null, [
+    MiniReact.createElement('button', null, { onClick: () => linkPage('Page 1', '/page1')}, 'Page 1'),
+    MiniReact.createElement('button', null, { onClick: () => linkPage('Page 3', '/page3')}, 'Page 3'),
+    MiniReact.createElement('button', null, { onClick: () => console.log('test')}, 'Test')
+  ]);
 }
 
 function Page3() {
@@ -166,6 +171,11 @@ function Page3() {
     MiniReact.createElement('p', null, null, 'Test'),
     MiniReact.createElement('button', null, { onClick: () => console.log('test')}, 'Test')
   ]);
+}
+
+function linkPage(label, path) {
+  history.pushState({ title: label }, label, path);
+  root.dispatchEvent(new Event("rerender"));
 }
 
 function generatePage() {
