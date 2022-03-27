@@ -219,27 +219,24 @@ root.dispatchEvent(new Event("rerender"));
 root.appendChild(generateStructure(struct));
 
 const MiniReact = {
-  Component: class Component {
+  Component: class Component  {},
+  
+  display(newProps){
+    if(this.shouldUpade(newProps)){
+      this.render()
+    }
+  },
 
-    display(newProps){
-      if(this.shouldUpade(newProps)){
-        this.render()
+  shoulUpdate(){
+      //Je compare oldProps avec newProp
+      if(JSON.stringify(this.props) != JSON.stringify(newProps)){
+        
+        //TODO : si render invoque d'autres composants, le composant courant appelle la fonction display(compProps) des sous-composants
+
+        return true;
+      }else{
+        return false;
       }
-    }
-
-    shoulUpdate(){
-        //Je compare oldProps avec newProp
-        if(JSON.stringify(this.props) != JSON.stringify(newProps)){
-          
-          //TODO : si render invoque d'autres composants, le composant courant appelle la fonction display(compProps) des sous-composants
-
-          return true;
-        }else{
-          return false;
-        }
-    }
-
-    
   },
 };
 
