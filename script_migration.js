@@ -1,5 +1,86 @@
 const root = document.querySelector("#root");
 
+
+String.prototype.interpolate = function(animal) {
+  let maChaine = this;
+  let result = null;
+
+  /*
+  * Je check si un input a du texte avec {{}}
+  * Si oui je recupere son contenu et fait appelle a prop_access
+  */
+  if(this.includes("{") || this.includes("{ ")){
+    let objectSplited = maChaine.split("{");
+
+    let myObject = objectSplited[2];
+    let temp = myObject.split("}}")
+
+    let tempSplit = temp[0].split("}}");
+    maChaine = tempSplit[0];
+    result = animal.prop_access(maChaine);
+  }
+  return this.replace("{{"+maChaine+"}}", result);
+}
+
+
+const MiniReact = {
+  Component: class Component {
+
+    display(newProps){
+      //Je call shouldUpdate()
+      shouldUpade()
+    }
+
+    shoulUpdate(){
+
+    }
+  },
+
+  createElement(type, props, attributes, children) {
+    const node = document.createElement(type);
+    if (attributes) {
+      for (let attName in attributes) {
+        if (/on([A-Z].*)/.test(attName)) {
+          const eventName = attName.match(/on([A-Z].*)/)[1].toLowerCase();
+          node.addEventListener(eventName, attributes[attName]);
+        } else {
+          node.setAttribute(attName, attributes[attName]);
+        }
+      }
+    }
+    /*if (dataset) {
+      for (let attName in dataset) {
+        node.dataset[attName] = dataset[attName];
+      }
+    }*/
+    if (children)
+      for (let child of children) {
+        if (child === undefined) continue;
+        if (typeof child === "string") {
+          node.appendChild(
+            document.createTextNode(child.interpolate(attributes))
+          );
+        } else {
+          node.appendChild(child);
+        }
+      }
+
+    return node;
+  },
+};
+
+/*console.log(MiniReact.createElement("table", null, null, [
+    MiniReact.createElement("tbody", null, null, new Array(5).fill().map((_, indexRow) => (
+      MiniReact.createElement("tr", null, null, new Array(5).fill().map((_, indexCol) => (
+        MiniReact.createElement("td", `${indexRow}-${indexCol}`, tdClickHandler, data[`${indexRow}-${indexCol}`] ??
+            `Cell ${indexRow}-${indexCol}`)
+      )),
+    )),
+  )),
+],));*/
+
+
+
 function link(label, path) {
   return {
     type: "a",
@@ -75,8 +156,16 @@ function Page1() {
 function Page2() {
   return {
     type: "h1",
-    children: ["Page 2", link("Page 1", "/page1")],
+    children: ["Page 2", link("Page 1", "/page1"), "Page 3", link("Page 3", "/page3")],
   };
+}
+
+function Page3() {
+  return MiniReact.createElement('div', null, null, [
+    MiniReact.createElement('p', null, null, 'Salut'),
+    MiniReact.createElement('p', null, null, 'Test'),
+    MiniReact.createElement('button', null, { onClick: () => console.log('test')}, 'Test')
+  ]);
 }
 
 function generatePage() {
@@ -90,14 +179,17 @@ function generatePage() {
     case "/page2":
       elem = Page2();
       break;
+    case "/page3":
+      elem = Page3();
+      break;
     default:
       elem = Page1();
       break;
   }
   if (root.firstChild) {
-    root.replaceChild(generateStructure(elem), root.firstChild);
+    root.replaceChild(elem, root.firstChild);
   } else {
-    root.appendChild(generateStructure(elem));
+    root.appendChild(elem);
   }
 }
 
@@ -161,27 +253,6 @@ Object.prototype.prop_access = function(path) {
     return obj;
 }
 
-String.prototype.interpolate = function(animal) {
-  let maChaine = this;
-  let result = null;
-
-  /*
-  * Je check si un input a du texte avec {{}}
-  * Si oui je recupere son contenu et fait appelle a prop_access
-  */
-  if(this.includes("{") || this.includes("{ ")){
-    let objectSplited = maChaine.split("{");
-
-    let myObject = objectSplited[2];
-    let temp = myObject.split("}}")
-
-    let tempSplit = temp[0].split("}}");
-    maChaine = tempSplit[0];
-    result = animal.prop_access(maChaine);
-  }
-  return this.replace("{{"+maChaine+"}}", result);
-}
-
 
 const generateStructure = (structure) => {
   const node = document.createElement(structure.type);
@@ -218,6 +289,7 @@ const generateStructure = (structure) => {
 root.dispatchEvent(new Event("rerender"));
 root.appendChild(generateStructure(struct));
 
+
 const MiniReact = {
   Component: class Component  {},
   
@@ -249,6 +321,7 @@ class Hello extends MiniReact.Component {
     },
   };
   render() {
+
     return MiniReact.createElement("div", null, [
       `Hello ${this.props.toWhat}`,
       MiniReact.createElement(UserList, { currentUser: this.props.toWhat }),
@@ -292,6 +365,7 @@ class App extends MiniReact.Component {
     users: [1, 2, 3],
   };
   render() {
+    
     return this.state.users.map((user) =>
       MiniReact.createElement(Hello, { toWhat: user })
     );
