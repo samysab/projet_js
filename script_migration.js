@@ -1,3 +1,5 @@
+import { type_check_v3 } from "./modules/typecheck.js";
+
 const root = document.querySelector("#root");
 
 
@@ -27,6 +29,7 @@ const MiniReact = {
   Component: class Component {
 
     render = null;
+    props;
 
     display(newProps){
       if(this.shouldUpade(newProps)){
