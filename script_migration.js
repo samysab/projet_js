@@ -26,10 +26,13 @@ String.prototype.interpolate = function(animal) {
 const MiniReact = {
   Component: class Component {
 
+    render = null;
+
     display(newProps){
       if(this.shouldUpade(newProps)){
-        this.render()
+        this.render = this.render()
       }
+      return this.render;
     }
 
     shoulUpdate(){
