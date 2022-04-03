@@ -1,6 +1,5 @@
-import { type_check_v3 } from "./modules/typecheck.js";
+import { type_check_v2 } from "./modules/typecheck.js";
 
-const root = document.querySelector("#root");
 
 
 String.prototype.interpolate = function(animal) {
@@ -85,9 +84,9 @@ const MiniReact = {
 
     // Component
     }else{
-      if(type_check_v3(props,propTypes)){
-        const comp = new type(props);
-        comp.display();
+      if(type_check_v2(attributes,type.propTypes)){
+        const comp = new type(attributes);
+        return comp.display();
       }else{
         throw new TypeError();
       }
