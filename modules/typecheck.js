@@ -37,7 +37,7 @@ export function type_check_v2(variable, conf) {
   return true;
 }
 
-export function type_check_v3(variable, conf) {
+export function type_check(variable, conf) {
 
   for (const [key, value] of Object.entries(conf)) {
     if(key === 'type' && !type_check_v1(variable, conf.type)) return false;

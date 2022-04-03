@@ -1,7 +1,5 @@
 import { type_check_v2 } from "./modules/typecheck.js";
 
-
-
 String.prototype.interpolate = function(animal) {
   let maChaine = this;
   let result = null;

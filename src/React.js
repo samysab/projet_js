@@ -1,39 +1,5 @@
-import { type_check_v2 } from "../modules/typecheck.js";
-
-String.prototype.interpolate = function(animal) {
-    let maChaine = this;
-    let result = null;
-  
-    /*
-    * Je check si un input a du texte avec {{}}
-    * Si oui je recupere son contenu et fait appelle a prop_access
-    */
-    if(this.includes("{") || this.includes("{ ")){
-      let objectSplited = maChaine.split("{");
-  
-      let myObject = objectSplited[2];
-      let temp = myObject.split("}}")
-  
-      let tempSplit = temp[0].split("}}");
-      maChaine = tempSplit[0];
-      result = animal.prop_access(maChaine);
-    }
-    return this.replace("{{"+maChaine+"}}", result);
-}
-
-Object.prototype.prop_access = function(path) {
-    let obj = this;
-      if (path === null || path === '') return obj;
-      let chemin = path.split('.')
-      for (let i = 0; i < chemin.length; ++i) {
-        if (obj === null || obj[chemin[i]] === undefined) return console.log(path + ' not exist.');
-        else obj = obj[chemin[i]];
-      }
-    return obj;
-}
-
-  
-
+import { type_check } from "../modules/typecheck.js";
+import * as prototypes from "../prototypes/prototypes.js";
 
 export const MiniReact = {
     Component: class Component {
@@ -44,12 +10,13 @@ export const MiniReact = {
       constructor(props){
         this.props = props;
       }
+
   
       display(newProps){
         if(this.shouldUpdate(newProps)){
 
-            this.props = newProps;
-            return this.render()
+          this.props = newProps;
+          return this.render()
         }
         return this.render();
       }
@@ -64,17 +31,17 @@ export const MiniReact = {
       }
     },
   
-    createElement(type, attributes, children) {
+    createElement(type, props, children) {
         let node;
         if (typeof(type) === "string"){
             node = document.createElement(type);
-            if (attributes) {
-                for (let attName in attributes) {
+            if (props) {
+                for (let attName in props) {
                     if (/on([A-Z].*)/.test(attName)) {
                         const eventName = attName.match(/on([A-Z].*)/)[1].toLowerCase();
-                        node.addEventListener(eventName, attributes[attName]);
+                        node.addEventListener(eventName, props[attName]);
                     } else {
-                        node.setAttribute(attName, attributes[attName]);
+                        node.setAttribute(attName, props[attName]);
                     }
                 }
             }
@@ -84,7 +51,7 @@ export const MiniReact = {
                     if (child === undefined) continue;
                     if (typeof child === "string") {
                         node.appendChild(
-                            document.createTextNode(child.interpolate(attributes))
+                            document.createTextNode(child.interpolate(props))
                         );
                     } else {
                         node.appendChild(child);
@@ -96,11 +63,14 @@ export const MiniReact = {
       }else{
         // Add Type Check V3
         // Example script_migration Hello Component => Hello.propTypes
-        if(type_check_v2(attributes,type.propTypes)){
-            const comp = new type(attributes);
-            return comp.display();
-        }else{
+
+        if(typeof(type.propTypes) !== 'undefined' && !type_check(props,type.propTypes)){
             throw new TypeError();
+        }else{
+          
+          const comp = new type(props);
+          return comp.display();
+            
         }
 
       }  
