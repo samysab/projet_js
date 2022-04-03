@@ -28,18 +28,20 @@ String.prototype.interpolate = function(animal) {
 const MiniReact = {
   Component: class Component {
 
-    render = null;
-    props;
+    props = null;
+    newProps;
+
+    constructor(props){
+      this.props = props;
+    }
 
     display(newProps){
       if(this.shouldUpade(newProps)){
-        this.render = this.render()
+        return this.render()
       }
-      return this.render;
     }
 
     shoulUpdate(){
-      //Je compare oldProps avec newProp
       if(JSON.stringify(this.props) != JSON.stringify(newProps)){
 
         //TODO : si render invoque d'autres composants, le composant courant appelle la fonction display(compProps) des sous-composants
@@ -51,37 +53,53 @@ const MiniReact = {
     }
   },
 
-  createElement(type, props, attributes, children) {
-    const node = document.createElement(type);
-    if (attributes) {
-      for (let attName in attributes) {
-        if (/on([A-Z].*)/.test(attName)) {
-          const eventName = attName.match(/on([A-Z].*)/)[1].toLowerCase();
-          node.addEventListener(eventName, attributes[attName]);
-        } else {
-          node.setAttribute(attName, attributes[attName]);
-        }
-      }
-    }
-    /*if (dataset) {
-      for (let attName in dataset) {
-        node.dataset[attName] = dataset[attName];
-      }
-    }*/
-    if (children)
-      for (let child of children) {
-        if (child === undefined) continue;
-        if (typeof child === "string") {
-          node.appendChild(
-            document.createTextNode(child.interpolate(attributes))
-          );
-        } else {
-          node.appendChild(child);
+  createElement(type, attributes, children) {
+
+    if (typeof(type) === "string"){
+    
+      const node = document.createElement(type);
+
+      if (attributes) {
+        for (let attName in attributes) {
+          if (/on([A-Z].*)/.test(attName)) {
+            const eventName = attName.match(/on([A-Z].*)/)[1].toLowerCase();
+            node.addEventListener(eventName, attributes[attName]);
+          } else {
+            node.setAttribute(attName, attributes[attName]);
+          }
         }
       }
 
+      if (children){
+        for (let child of children) {
+          if (child === undefined) continue;
+          if (typeof child === "string") {
+            node.appendChild(
+              document.createTextNode(child.interpolate(attributes))
+            );
+          } else {
+            node.appendChild(child);
+          }
+        }     
+      } 
+
+    // Component
+    }else{
+      if(type_check_v3(props,propTypes)){
+        const comp = new type(props);
+        comp.display();
+      }else{
+        throw new TypeError();
+      }
+
+    }  
+
     return node;
   },
+
+  render(){
+
+  }
 };
 
 /*console.log(MiniReact.createElement("table", null, null, [
