@@ -47,7 +47,9 @@ export const MiniReact = {
   
       display(newProps){
         if(this.shouldUpdate(newProps)){
-          return this.render()
+
+            this.props = newProps;
+            return this.render()
         }
         return this.render();
       }
