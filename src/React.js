@@ -6,23 +6,26 @@ export const MiniReact = {
   
       props = null;
       newProps;
-  
+      
       constructor(props){
         this.props = props;
       }
 
+
   
       display(newProps){
-        if(this.shouldUpdate(newProps)){
-
-          this.props = newProps;
+        
+        if(this.shouldUpdate()){
+          if(newProps != null){
+            this.props = newProps;
+          }
           return this.render()
         }
         return this.render();
       }
   
-      shouldUpdate(newProps){
-        if(JSON.stringify(this.props) != JSON.stringify(newProps)){
+      shouldUpdate(){
+        if(JSON.stringify(this.props) != JSON.stringify(this.newProps)){
           //TODO : si render invoque d'autres composants, le composant courant appelle la fonction display(compProps) des sous-composants
           return true;
         }else{
@@ -54,7 +57,8 @@ export const MiniReact = {
                             document.createTextNode(child.interpolate(props))
                         );
                     } else {
-                        node.appendChild(child);
+                      
+                      node.appendChild(child);
                     }
                 }     
             } 

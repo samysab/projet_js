@@ -1,48 +1,35 @@
 import { type_check_v2 } from "./modules/typecheck.js";
+import * as prototypes from "../prototypes/prototypes.js";
 
-String.prototype.interpolate = function(animal) {
-  let maChaine = this;
-  let result = null;
-
-  /*
-  * Je check si un input a du texte avec {{}}
-  * Si oui je recupere son contenu et fait appelle a prop_access
-  */
-  if(this.includes("{") || this.includes("{ ")){
-    let objectSplited = maChaine.split("{");
-
-    let myObject = objectSplited[2];
-    let temp = myObject.split("}}")
-
-    let tempSplit = temp[0].split("}}");
-    maChaine = tempSplit[0];
-    result = animal.prop_access(maChaine);
-  }
-  return this.replace("{{"+maChaine+"}}", result);
-}
+const root = document.getElementById("root");
 
 
 const MiniReact = {
   Component: class Component {
-
+  
     props = null;
     newProps;
-
+    
     constructor(props){
       this.props = props;
     }
 
+
+
     display(newProps){
-      if(this.shouldUpade(newProps)){
+      
+      if(this.shouldUpdate()){
+        if(newProps != null){
+          this.props = newProps;
+        }
         return this.render()
       }
+      return this.render();
     }
 
-    shoulUpdate(){
-      if(JSON.stringify(this.props) != JSON.stringify(newProps)){
-
+    shouldUpdate(){
+      if(JSON.stringify(this.props) != JSON.stringify(this.newProps)){
         //TODO : si render invoque d'autres composants, le composant courant appelle la fonction display(compProps) des sous-composants
-
         return true;
       }else{
         return false;
@@ -50,53 +37,54 @@ const MiniReact = {
     }
   },
 
-  createElement(type, attributes, children) {
 
+  createElement(type, props, children) {
+    let node;
     if (typeof(type) === "string"){
-    
-      const node = document.createElement(type);
-
-      if (attributes) {
-        for (let attName in attributes) {
-          if (/on([A-Z].*)/.test(attName)) {
-            const eventName = attName.match(/on([A-Z].*)/)[1].toLowerCase();
-            node.addEventListener(eventName, attributes[attName]);
-          } else {
-            node.setAttribute(attName, attributes[attName]);
-          }
+        node = document.createElement(type);
+        if (props) {
+            for (let attName in props) {
+                if (/on([A-Z].*)/.test(attName)) {
+                    const eventName = attName.match(/on([A-Z].*)/)[1].toLowerCase();
+                    node.addEventListener(eventName, props[attName]);
+                } else {
+                    node.setAttribute(attName, props[attName]);
+                }
+            }
         }
-      }
 
-      if (children){
-        for (let child of children) {
-          if (child === undefined) continue;
-          if (typeof child === "string") {
-            node.appendChild(
-              document.createTextNode(child.interpolate(attributes))
-            );
-          } else {
-            node.appendChild(child);
-          }
-        }     
-      } 
+        if (children){
+            for (let child of children) {
+                if (child === undefined) continue;
+                if (typeof child === "string") {
+                    node.appendChild(
+                        document.createTextNode(child.interpolate(props))
+                    );
+                } else {
+                  console.log(child)
+                  node.appendChild(child);
+                }
+            }     
+        } 
 
-    // Component
-    }else{
-      if(type_check_v2(attributes,type.propTypes)){
-        const comp = new type(attributes);
-        return comp.display();
-      }else{
+  //Component
+  }else{
+    // Add Type Check V3
+    // Example script_migration Hello Component => Hello.propTypes
+
+    if(typeof(type.propTypes) !== 'undefined' && !type_check(props,type.propTypes)){
         throw new TypeError();
-      }
+    }else{
+      
+      const comp = new type(props);
+      return comp.display();
+        
+    }
 
-    }  
-
-    return node;
-  },
-
-  render(){
-
-  }
+  }  
+  return node;
+},
+  
 };
 
 /*console.log(MiniReact.createElement("table", null, null, [
@@ -188,18 +176,18 @@ function Page2() {
   //   type: "h1",
   //   children: ["Page 2", link("Page 1", "/page1"), "Page 3", link("Page 3", "/page3")],
   // };
-  return MiniReact.createElement('h1', null, null, [
-    MiniReact.createElement('button', null, { onClick: () => linkPage('Page 1', '/page1')}, 'Page 1'),
-    MiniReact.createElement('button', null, { onClick: () => linkPage('Page 3', '/page3')}, 'Page 3'),
-    MiniReact.createElement('button', null, { onClick: () => console.log('test')}, 'Test')
+  return MiniReact.createElement('h1', null, [
+    MiniReact.createElement('button', { onClick: () => linkPage('Page 1', '/page1')}, 'Page 1'),
+    MiniReact.createElement('button', { onClick: () => linkPage('Page 3', '/page3')}, 'Page 3'),
+    MiniReact.createElement('button', { onClick: () => console.log('test')}, 'Test')
   ]);
 }
 
 function Page3() {
-  return MiniReact.createElement('div', null, null, [
-    MiniReact.createElement('p', null, null, 'Salut'),
-    MiniReact.createElement('p', null, null, 'Test'),
-    MiniReact.createElement('button', null, { onClick: () => console.log('test')}, 'Test')
+  return MiniReact.createElement('div', null, [
+    MiniReact.createElement('p', null, 'Salut'),
+    MiniReact.createElement('p', null, 'Test'),
+    MiniReact.createElement('button', { onClick: () => console.log('test')}, 'Test')
   ]);
 }
 
@@ -236,22 +224,21 @@ function generatePage() {
 root.addEventListener("rerender", generatePage);
 
 window.onpopstate = () => root.dispatchEvent(new Event("rerender"));
-//root.appendChild(Page2());
 
 const struct = {
-  type: "div", // Hello : Function
+  type: "div", 
   attributes: {
     id: "players",
   },
   children: [
     {
-      type: "div", // Hello : Function
+      type: "div",
       attributes: {
         id: "playersList",
       },
     },
     {
-      type: "ul", // Hello : Function
+      type: "ul",
       attributes: {
         id: "playersList",
       },
@@ -264,7 +251,7 @@ const struct = {
           children: ["User1"],
         },
         {
-          type: "li", //Hello,
+          type: "li",
           dataset: {
             position: 2,
           },
@@ -274,17 +261,6 @@ const struct = {
     },
   ],
 };
-
-Object.prototype.prop_access = function(path) {
-  let obj = this;
-    if (path === null || path === '') return obj;
-    let chemin = path.split('.')
-    for (let i = 0; i < chemin.length; ++i) {
-      if (obj === null || obj[chemin[i]] === undefined) return console.log(path + ' not exist.');
-      else obj = obj[chemin[i]];
-    }
-    return obj;
-}
 
 
 const generateStructure = (structure) => {
