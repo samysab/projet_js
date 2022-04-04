@@ -114,18 +114,29 @@ const MiniReact = {
 
 
 function link(label, path) {
-    return {
-        type: "a",
+    // return {
+    //     type: "a",
+    //     attributes: {
+    //         href: path,
+    //         onClick: (e) => {
+    //             e.preventDefault();
+    //             history.pushState({title: label}, label, path);
+    //             root.dispatchEvent(new Event("rerender"));
+    //         },
+    //     },
+    //     children: [label],
+    // };
+
+    return MiniReact.createElement("a", {
         attributes: {
             href: path,
             onClick: (e) => {
                 e.preventDefault();
                 history.pushState({title: label}, label, path);
                 root.dispatchEvent(new Event("rerender"));
-            },
-        },
-        children: [label],
-    };
+            }
+        }
+    }, [label])
 }
 
 function Page1() {
@@ -154,6 +165,7 @@ function Page1() {
     };
 
     return MiniReact.createElement('div', null, [
+        link("Page 2", "/page2"),
         MiniReact.createElement('table', null,
             [
                 MiniReact.createElement('tbody', null,
