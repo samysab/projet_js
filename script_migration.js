@@ -1,8 +1,8 @@
 import {type_check} from "./modules/typecheck.js";
+import {fetchTab} from "./modules/Promises.js";
 import * as prototypes from "../prototypes/prototypes.js";
 
 const root = document.getElementById("root");
-
 
 const MiniReact = {
     Component: class Component {
@@ -139,6 +139,7 @@ function link(label, path) {
     }, [label])
 }
 
+
 function Page1() {
     const data = JSON.parse(localStorage.getItem("tableData") ?? "{}");
 
@@ -164,6 +165,11 @@ function Page1() {
         td.addEventListener("click", tdClickHandler);
     };
 
+
+    const test = fetchTab().then((val) => {
+        localStorage.setItem("dataInit", val);
+    })
+
     return MiniReact.createElement('div', null, [
         link("Page 2", "/page2"),
         MiniReact.createElement('table', null,
@@ -179,8 +185,8 @@ function Page1() {
                                     onClick: tdClickHandler
                                 }
                             }, [
-                                data[`${indexRow}-${indexCol}`] ?? `Cell ${indexRow}-${indexCol}`
-                            ])
+                                data[`${indexRow}-${indexCol}`] ??
+                                localStorage.getItem("dataInit") + `${indexRow}-${indexCol}`,])
                         )))
                     ))
                 ),
