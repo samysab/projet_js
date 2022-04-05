@@ -46,26 +46,32 @@ const MiniReact = {
             if (props) {
                 if (props.attributes) {
                     for (let attName in props.attributes) {
-                        if (/on([A-Z].*)/.test(attName)) {
-                            const eventName = attName.match(/on([A-Z].*)/)[1].toLowerCase();
-                            node.addEventListener(eventName, props.attributes[attName]);
-                        } else {
-                            node.setAttribute(attName, props.attributes[attName]);
+                        if(attName != 'prop_access'){
+                            if (/on([A-Z].*)/.test(attName)) {
+                                const eventName = attName.match(/on([A-Z].*)/)[1].toLowerCase();
+                                node.addEventListener(eventName, props.attributes[attName]);
+                            } else {
+                                node.setAttribute(attName, props.attributes[attName]);
+                            }
                         }
                     }
                 }
 
                 if (props.dataset) {
                     for (let attName in props.dataset) {
-                        node.dataset[attName] = props.dataset[attName];
+                        if(attName != 'prop_access'){
+                            node.dataset[attName] = props.dataset[attName];
+                        }
                     }
                 }
                 for (let attName in props) {
-                    if (/on([A-Z].*)/.test(attName)) {
-                        const eventName = attName.match(/on([A-Z].*)/)[1].toLowerCase();
-                        node.addEventListener(eventName, props[attName]);
-                    } else {
-                        node.setAttribute(attName, props[attName]);
+                    if(attName != 'prop_access'){
+                        if (/on([A-Z].*)/.test(attName)) {
+                            const eventName = attName.match(/on([A-Z].*)/)[1].toLowerCase();
+                            node.addEventListener(eventName, props[attName]);
+                        } else {
+                            node.setAttribute(attName, props[attName]);
+                        }
                     }
                 }
 
@@ -272,6 +278,7 @@ function generatePage() {
             elem = Page3();
             break;
         default:
+            document.title = "Home";
             elem = Page1();
             break;
     }
