@@ -42,6 +42,7 @@ const MiniReact = {
         if (typeof (type) === "string") {
             node = document.createElement(type);
 
+
             if (props) {
                 if (props.attributes) {
                     for (let attName in props.attributes) {
@@ -67,6 +68,9 @@ const MiniReact = {
                         node.setAttribute(attName, props[attName]);
                     }
                 }
+
+                node.removeAttribute("prop_access");
+                node.removeAttribute("data-prop_access")
             }
 
             if (children) {
@@ -167,6 +171,7 @@ function Page1() {
 
 
     const test = fetchTab().then((val) => {
+
         localStorage.setItem("dataInit", val);
     })
 

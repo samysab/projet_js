@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="fdf28c2c-8a78-44fd-a3a8-a21876708830" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/script_migration.js" beforeDir="false" afterPath="$PROJECT_DIR$/script_migration.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -14,6 +14,14 @@
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="GitSEFilterConfiguration">
+    <file-type-list>
+      <filtered-out-file-type name="LOCAL_BRANCH" />
+      <filtered-out-file-type name="REMOTE_BRANCH" />
+      <filtered-out-file-type name="TAG" />
+      <filtered-out-file-type name="COMMIT_BY_MESSAGE" />
+    </file-type-list>
   </component>
   <component name="ProjectId" id="26ynKaCLPWEroRgwEA1B4LOZ8pF" />
   <component name="ProjectViewState">
@@ -37,10 +45,25 @@
       <updated>1648404630803</updated>
       <workItem from="1648404632820" duration="1732000" />
       <workItem from="1648406380362" duration="2051000" />
+      <workItem from="1649089916856" duration="18000" />
+      <workItem from="1649089937292" duration="74000" />
+      <workItem from="1649090030353" duration="64000" />
     </task>
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+    <option name="oldMeFiltersMigrated" value="true" />
   </component>
 </project>
