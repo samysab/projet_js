@@ -267,6 +267,7 @@ function generatePage() {
             elem = Page3();
             break;
         default:
+            document.title = "Home";
             elem = Page1();
             break;
     }
